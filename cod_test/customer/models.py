@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
-from cinetpay_sdk.s_d_k import Cinetpay
+try:
+    from cinetpay_sdk.s_d_k import Cinetpay
+except ImportError:
+    Cinetpay = None
 from shop import models as Produit
 from django.utils.timezone import now
 from datetime import timedelta
@@ -87,9 +90,8 @@ class Panier(models.Model):
 
     @property
     def total(self):
-        panier = Panier.objects.get(id=self.id)
         sum = 0
-        for i in panier.produit_panier.all():
+        for i in self.produit_panier.all():
             sum = sum + i.total
         return int(sum)
 
